@@ -5,7 +5,7 @@ import Foundation
 //Дженерики позволяют создавать многократно используемые функции с разными с типами данных, которые также могут соответствовать разным ограничениям
 
 //5
-
+//Тут дописать
 // associatedtype используется с протоколами.
 
 //6
@@ -27,11 +27,10 @@ comparableMax(first: 23, second: 10)
 //c
 
 func comparableCanChange<T: Comparable>(first: inout T, second: inout T) {
-    if (second < first){
+    guard (second < first) else { return }
         let tmp: T = first
         first = second
         second = tmp
-    }
 }
 var a = 2
 var b = 6
@@ -40,28 +39,40 @@ a
 b
 
 //d
-
+//Пример использования
 func f<T>(first: @escaping (T)->Void, second: @escaping (T)->Void) -> (T)->Void{
     return { (t : T) -> Void in
         first(t)
         second(t)
     }
 }
+
+func a<T>(t: T){
+    print("a")
+    print(t)
+}
+
+func b<T>(t: T){
+    print("b")
+    print(t)
+}
+
+
 //7
 
 //a
 
 extension Array where Element: Comparable {
-    var maxEl: Element {
-        get{    var max = self[0]
-                for i in self {
-                    if (i > max) {max = i} }
-                return max
-        }
+    var maxEl: Element? {
+        guard (self.count != 0) else {return nil}
+        var max = self[0]
+        for i in self {
+            if (i > max) {max = i} }
+        return max
     }
 }
 
-var arr = [10,10,3,4,5,1,2,10,2,3,5,63,3,3,10,2,3,4]
+var arr: [Int] = [1,1,1,12,32,1,2,3,4,2,1,2,3,6,3,1,1]
 arr.maxEl
 //b
 
@@ -81,26 +92,45 @@ extension Array where Element: Equatable{
             self.remove(at: index)
         }
     }
-   /* mutating func delEq2(){ // Если Hashable
+    /*mutating func delEq3(){ // Если Hashable
         self = Array(Set(self))
     }*/
+    mutating func delEq2(){
+        var Arr: Array<Element> = []
+        for i in self{
+            if !Arr.contains(i) {Arr.append(i)}
+        }
+        self = Arr
+    }
+    
 }
-arr.delEq()
+arr.delEq2()
 arr
+
+//Вычислительная сложность O(n^2)
+//Дополнительная память для множества
+//Конечно можно сделать 2 вариантом, если бы элементы были Hashable(Закидываем в множество и обратно в массив)
+//Также добавил с использованием дополнительного массива
 
 //8
 
 //a
 
+//Я подумал, что с pow слишком просто
 extension Int {
-    static func ^ (left: Int, right: Int) -> Int{
+    /*static func ^ (left: Int, right: Int) -> Int{
         var res = 1
         guard (right != 0) else { return res }
         for _ in 0...abs(right) - 1{
             res *= right > 0 ? left : 1/left
         }
         return res
+    }*/
+    
+    static func ^ (left: Int, right: Int) -> Int{
+        return Int(pow(Double(left), Double(right)))
     }
+    
 }
 2^(10)
 
@@ -120,9 +150,15 @@ s
 //c
 
 infix operator <*
-func <* (left: UITableViewDelegate, right:UITableView) {
-    right.delegate = left
+func <* (left: UIViewController, right:UITableView) {
+    right.delegate = left as? UITableViewDelegate
 }
+
+var uiv: UIViewController = UIViewController()
+var tv: UITableView = UITableView()
+
+uiv <* tv
+
 
 //d
 
