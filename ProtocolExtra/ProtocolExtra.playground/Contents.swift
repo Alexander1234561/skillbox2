@@ -14,6 +14,7 @@ class a: OnlyForClass{}
 //2
 
 //Да, использовав ключевые слова: @objc optional, такие протоколы могут применяться только классами, а не структурами и перечислениями
+//К сожалению не смог найти еще вариантов.
 
 @objc protocol Beer{
    @objc optional var crackers: Bool { get }
@@ -25,10 +26,10 @@ class Bar: Beer{
     var crackers = true
 }
 
-//3 ???
+//3
 
 //Нет нельзя -> Обойти можно
-
+/*
 extension Home {
     struct Holder {
         static var table :String = ""
@@ -40,9 +41,26 @@ extension Home {
 }
 var h: Home = Home()
 h.table = "tab"
-h.table
+h.table*/
 
-//4
+// Результат будет только 456 => работает неверно
+
+//1
+extension Home {
+    private static var _myComputedProperty = [String:String]()
+    
+    var table: String {
+        get{
+            let tmpAddress = String(format: "%p", unsafeBitCast(self, to: Int.self))
+            return Home._myComputedProperty[tmpAddress] ?? ""
+        }
+        set(newValue) {
+            let tmpAddress = String(format: "%p", unsafeBitCast(self, to: Int.self))
+            Home._myComputedProperty[tmpAddress] = newValue
+        }
+    }
+}
+//4s
  
 //Да. Расширения могут добавлять новые вложенные типы к существующим классам, структурам и перечислениям.
  
@@ -121,8 +139,7 @@ protocol LastProtocol: NewProtocol, AnotherProtocol{
 
 //9
 
-//вроде как нет.
-
+//понял.
 
 //10
 
