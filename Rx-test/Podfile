@@ -1,0 +1,8 @@
+platform :ios, '10.0'
+use_frameworks!
+
+target 'Rx-test' do
+    pod 'Bond', '7.0'
+    pod 'ReactiveKit', '3.9'
+end
+
